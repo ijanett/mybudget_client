@@ -5,6 +5,16 @@ let user;
 let budgets;
 
 
+fetch("http://localhost:3000/users/1")
+    .then(res => res.json())
+    .then(json => {
+        user = json
+        budgets = json.included
+        console.log(user)
+        console.log(budgets)
+        
+    })
+
 // function renderUsers(json) {
 //     Object.keys(json).forEach(function(key) {
 //         const userObjs = json[key];
