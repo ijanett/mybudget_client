@@ -1,6 +1,9 @@
 const newBudgetContainer = document.querySelector("#new-budget-container")
 const budgetContainer = document.querySelector("#budget-container")
 
+let user;
+let budgets;
+
 
 // function renderUsers(json) {
 //     Object.keys(json).forEach(function(key) {
