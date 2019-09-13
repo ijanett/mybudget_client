@@ -8,21 +8,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>myBudget</title>
 </head>
-<body>
-    <h1>myBudget</h1>
-    <div id="subcategories-container">
-        <canvas id="expense-chart"></canvas>
-    </div>
-    <div id="new-budget-container">
-        <select class="add-type">
-            <option value="inc">Income</option>
-            <option value="exp">Expense</option>
-        </select>
-        <input type="text" class="add-description" placeholder="Description">
-        <input type="number" class="add-value" placeholder="Amount">
-        <button class="add-btn">submit</button>
-    </div>
-    <div id="budget-container">
+<body class="bg-light py-5">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h1>myBudget</h1>
+                <div id="subcategories-container">
+                    <canvas id="expense-chart"></canvas>
+                </div>
+                <div id="new-budget-container">
+                    <select class="add-type">
+                        <option value="inc">Income</option>
+                        <option value="exp">Expense</option>
+                    </select>
+                    <input type="text" class="add-description" placeholder="Description">
+                    <input type="number" class="add-value" placeholder="Amount">
+                    <button class="add-btn">submit</button>
+                </div>
+                <div id="budget-container">
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script src="index.js"></script>
