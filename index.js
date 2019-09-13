@@ -1,6 +1,7 @@
 const newBudgetContainer = document.querySelector("#new-budget-container")
 const budgetContainer = document.querySelector("#budget-container")
 
+let expenseChart = document.querySelector("#expense-chart")
 let user;
 let budgets;
 
@@ -13,6 +14,10 @@ fetch("http://localhost:3000/users/1")
         console.log(user)
         console.log(budgets)
         
+        // budgetContainer.innerHTML += `
+        // <h3>${user.data.attributes.username}</h3>
+        // `
+
     })
 
 // function renderUsers(json) {
