@@ -4,18 +4,20 @@ const subcategoryDropdown = document.getElementById("subcategory-dropdown");
 const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
-const incomeList = document.getElementById("income-list")
-const incomeTotalContainer = document.getElementById("income-total")
+const incomeList = document.getElementById("income-list");
+const incomeTotalContainer = document.getElementById("income-total");
 const expenseInputDescription = document.getElementById("expense-description");
-const expenseInputAmount = document.getElementById("expense-amount")
+const expenseInputAmount = document.getElementById("expense-amount");
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
-const expenseList = document.getElementById("expense-list")
+const expenseList = document.getElementById("expense-list");
+const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let user;
 let budgets;
 let income;
 let incomeTotal = 0;
 let expense;
+let expenseTotal = 0;
 let subcategoryNames;
 let subcategories = [];
 
@@ -26,10 +28,10 @@ function renderIncome(objArray) {
             <li>${obj.attributes.description} $${obj.attributes.amount}</li>
         `
         incomeTotal += obj.attributes.amount
-        incomeTotalContainer.innerHTML += `
-            <h4>Income Total: $${incomeTotal}</h4>
-        `
     })
+    incomeTotalContainer.innerHTML += `
+        <h4>Income Total: $${incomeTotal}</h4>
+    `
 }
 
 function renderExpense(objArray) {
@@ -37,7 +39,11 @@ function renderExpense(objArray) {
         expenseList.innerHTML += `
             <li>${obj.attributes.description} $${obj.attributes.amount}</li>
         `
+        expenseTotal += obj.attributes.amount
     })
+    expenseTotalContainer.innerHTML += `
+        <h4>Expense Total: $${expenseTotal}</h4>
+    `
 }
 
 // expense form submit
