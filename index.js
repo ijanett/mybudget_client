@@ -1,7 +1,8 @@
 const newBudgetContainer = document.querySelector("#new-budget-container");
 const budgetContainer = document.querySelector("#budget-container");
+const subcategoryDropdown = document.getElementById("subcategory-dropdown")
 
-let expenseChart = document.querySelector("#expense-chart");
+let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let user;
 let budgets;
 let subcategoryNames;
@@ -12,21 +13,13 @@ fetch("http://localhost:3000/subcategories")
     .then(res => res.json())
     .then(json => {
         json.data.forEach(function(obj) {
+            subcategoryDropdown.innerHTML += `
+            <option value="${obj.id}">${obj.attributes.name}</option>
+            `
             subcategoryNames = obj.attributes.name;
-            subcategories.push(subcategoryNames)
+            subcategories.push(subcategoryNames);
         })
     })
-
-// let subcategoryChart = new Chart(expenseChart, {
-//     type: 'doughnut',
-//     data: {
-//         labels: subcategories,
-//         datasets: []
-//     },
-//     options: {}
-// });
-
-
 
 fetch("http://localhost:3000/users/1")
     .then(res => res.json())
