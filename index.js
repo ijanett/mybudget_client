@@ -1,6 +1,7 @@
-const newBudgetContainer = document.querySelector("#new-budget-container");
-const budgetContainer = document.querySelector("#budget-container");
+const newBudgetContainer = document.querySelector("#end-budget-container");
+// const budgetContainer = document.querySelector("#budget-container");
 const subcategoryDropdown = document.getElementById("subcategory-dropdown");
+const subcategoriesContainer = document.getElementById("subcategories-container")
 const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
@@ -18,6 +19,7 @@ let income;
 let incomeTotal = 0;
 let expense;
 let expenseTotal = 0;
+let newBudget = 0;
 let subcategoryNames;
 let subcategories = [];
 
@@ -28,7 +30,11 @@ function renderIncome(objArray) {
             <li>${obj.attributes.description} $${obj.attributes.amount}</li>
         `
         incomeTotal += obj.attributes.amount
+        newBudget += incomeTotal
     })
+    newBudgetContainer.innerHTML += `
+        <h4>Remaining Budget: $${newBudget}</h4>
+    `
     incomeTotalContainer.innerHTML += `
         <h4>Income Total: $${incomeTotal}</h4>
     `
@@ -40,11 +46,24 @@ function renderExpense(objArray) {
             <li>${obj.attributes.description} $${obj.attributes.amount}</li>
         `
         expenseTotal += obj.attributes.amount
+        newBudget = incomeTotal - expenseTotal
     })
+    newBudgetContainer.innerHTML = `
+        <h4>Remaining Budget: $${newBudget}</h4>
+    `
     expenseTotalContainer.innerHTML += `
         <h4>Expense Total: $${expenseTotal}</h4>
     `
 }
+
+// function renderBudget(incomeTotal, expenseTotal) {
+//     remainingBudget += incomeTotal
+//     remainingBudget -= expenseTotal
+//     console.log(remainingBudget)
+//     newBudgetContainer.innerHTML += `
+//         <h4>Remaining Budget: $${remainingBudget}</h4>
+//     `
+// };
 
 // expense form submit
 expenseSubmitBtn.addEventListener('click', function(e) {
