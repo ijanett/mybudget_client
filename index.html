@@ -35,10 +35,16 @@
                             <h4>Income Total: $0</h4>
                         </div>
                         <form id="income-form">
-                            <input placeholder="income description" id="income-description" type="text" name="description" value="">
-                            <input placeholder="amount" id="income-amount" type="number" name="amount" value="">
-                            <input id="submit-button" type="submit" value="+">
+                            <div class="form-group">
+                                <input placeholder="income description" id="income-description" type="text" name="description" value="">
+                                <input placeholder="amount" id="income-amount" type="number" name="amount" value="">
+                                <input id="income-submit-button" type="submit" value="+">
+                            </div>
                         </form>
+                    </div>
+                    <div class="col-sm" style="align-content: center">
+                        <div id="income-list">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -47,11 +53,13 @@
                                 <h4>Expense Total: $0</h4>
                             </div>
                             <form id="expense-form">
-                                <select id="subcategory-dropdown" name="name"></select>
-                                <br>
-                                <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
-                                <input placeholder="amount" id="expense-amount" type="number" name="amount" value="">
-                                <input id="submit-button" type="submit" value="-">
+                                <div class="form-group">
+                                    <select id="subcategory-dropdown" name="name"></select>
+                                    <br>
+                                    <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
+                                    <input placeholder="amount" id="expense-amount" type="number" name="amount" value="">
+                                    <input id="expense-submit-button" type="submit" value="-">
+                                </div>
                             </form>
                         </div>
                 </div>
