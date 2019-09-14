@@ -1,7 +1,8 @@
 const newBudgetContainer = document.querySelector("#new-budget-container");
 const budgetContainer = document.querySelector("#budget-container");
-const subcategoryDropdown = document.getElementById("subcategory-dropdown")
-
+const subcategoryDropdown = document.getElementById("subcategory-dropdown");
+const incomeDescription = document.getElementById("income-description");
+const incomeAmount = document.getElementById("income-amount")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let user;
 let budgets;
