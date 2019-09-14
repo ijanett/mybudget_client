@@ -8,6 +8,7 @@ const incomeList = document.getElementById("income-list")
 const expenseInputDescription = document.getElementById("expense-description");
 const expenseInputAmount = document.getElementById("expense-amount")
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
+const expenseList = document.getElementById("expense-list")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let user;
 let budgets;
@@ -25,6 +26,13 @@ function renderIncome(objArray) {
     })
 }
 
+function renderExpense(objArray) {
+    objArray.forEach(obj => {
+        expenseList.innerHTML += `
+            <li>${obj.attributes.description} $${obj.attributes.amount}</li>
+        `
+    })
+}
 // expense form submit
 expenseSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
@@ -53,8 +61,12 @@ fetch("http://localhost:3000/users/1")
         income = budgets.filter(budget => {
             return budget.attributes.category === "income"
         })
-        console.log(income)
+        expense = budgets.filter(budget => {
+            return budget.attributes.category === "expense"
+        })
+        console.log(expense)
         renderIncome(income);
+        renderExpense(expense)
         
         // budgetContainer.innerHTML += `
         // <h3>${user.data.attributes.username}</h3>
