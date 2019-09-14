@@ -12,20 +12,44 @@
     <div class="col-md-8 offset-md-2">
         <div class="card">
             <div class="card-body">
-                <h1>myBudget</h1>
+                    <div class="container">
+                        <nav class="navbar navbar-light" style="background-color: white">
+                            <a class="navbar-brand">
+                                <img src="myBudget-logo.png"></img>
+                            </a>
+                        </nav>
+                    </div>
+                <div class="container">
+                    <div id="end-budget-container" align="center">
+                        <h4>Remaining Budget: $0</h4>
+                    </div>
+                </div>
                 <div id="subcategories-container">
                     <canvas id="expense-chart"></canvas>
                 </div>
-                <div id="new-budget-container">
-                    <select class="add-type">
-                        <option value="inc">Income</option>
-                        <option value="exp">Expense</option>
-                    </select>
-                    <input type="text" class="add-description" placeholder="Description">
-                    <input type="number" class="add-value" placeholder="Amount">
-                    <button class="add-btn">submit</button>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <h4>Income Total: $0</h4>
+                        <form id="income-form">
+                            <input placeholder="income description" id="income-description" type="text" name="description" value="">
+                            <input placeholder="amount" id="income-amount" type="number" name="amount" value="">
+                            <input id="submit-button" type="submit" value="+">
+                        </form>
+                    </div>
                 </div>
-                <div id="budget-container">
+                <div class="row">
+                        <div class="col-sm">
+                            <h4>Expense Total: $0</h4>
+                            <form id="expense-form">
+                                <select id="subcategory-dropdown" name="name"></select>
+                                <br>
+                                <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
+                                <input placeholder="amount" id="expense-amount" type="number" name="amount" value="">
+                                <input id="submit-button" type="submit" value="-">
+                            </form>
+                        </div>
                 </div>
             </div>
         </div>
