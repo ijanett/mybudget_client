@@ -3,7 +3,6 @@ const myBudgetContainer = document.querySelector("#myBudget-container")
 const usernameInputField = document.getElementById("username")
 const usernameSubmitBtn = document.querySelector(".btn-success")
 const newBudgetContainer = document.querySelector("#end-budget-container");
-// const budgetContainer = document.querySelector("#budget-container");
 const subcategoryDropdown = document.getElementById("subcategory-dropdown");
 const subcategoriesContainer = document.getElementById("subcategories-container")
 const incomeInputDescription = document.getElementById("income-description");
@@ -29,7 +28,7 @@ let subcategoriesData = [];
 let uniqExpenseNames;
 let expenseSums;
 
-
+// display income info
 function renderIncome(objArray) {
     objArray.forEach(obj => {
         incomeListContainer.innerHTML += `
@@ -46,6 +45,7 @@ function renderIncome(objArray) {
     `
 }
 
+// display expense info
 function renderExpense(objArray) {
     objArray.forEach(obj => {
         expenseListContainer.innerHTML += `
@@ -63,7 +63,7 @@ function renderExpense(objArray) {
 }
 
 
-// get subcategories and add to dropdown option values
+// get subcategories and add to dropdown options
 fetch("http://localhost:3000/subcategories")
     .then(res => res.json())
     .then(json => {
@@ -74,6 +74,8 @@ fetch("http://localhost:3000/subcategories")
         })
     })
 
+
+// login form submit
 usernameSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
     let userData = {
@@ -84,6 +86,7 @@ usernameSubmitBtn.addEventListener('click', function(e) {
     myBudgetContainer.style.display = 'block'
 })
 
+// get current user info
 function loginUser(userData) {
     let configObj = {
         method: 'POST',
@@ -93,9 +96,6 @@ function loginUser(userData) {
         },
         body: JSON.stringify(userData)
     }
-
-    // make input text field and button, querySelect input field, add event listener to button
-    // call fetch function loginUser, pass in user data
 
     fetch('http://localhost:3000/users', configObj)
         .then(res => res.json())
@@ -132,15 +132,3 @@ function loginUser(userData) {
         
     });
 }
-        
-
-// function renderUsers(json) {
-//     Object.keys(json).forEach(function(key) {
-//         const userObjs = json[key];
-//         userObjs.forEach(user => {
-//             userContainer.innerHTML += `
-//             <h3>${user.attributes.username}</h3>
-//             `
-//         })
-//     })
-// }
