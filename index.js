@@ -2,6 +2,8 @@ const loginContainer = document.querySelector("#login-container")
 const myBudgetContainer = document.querySelector("#myBudget-container")
 const usernameInputField = document.getElementById("username")
 const usernameSubmitBtn = document.querySelector(".btn-success")
+const loginError = document.querySelector(".invalid-feedback")
+const logoutBtn = document.querySelector("#logout-button")
 const newBudgetContainer = document.querySelector("#end-budget-container");
 const subcategoryDropdown = document.getElementById("subcategory-dropdown");
 const subcategoriesContainer = document.getElementById("subcategories-container")
@@ -17,6 +19,7 @@ const expenseListContainer = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let currentUser;
+let currentUserId;
 let budgets;
 let incomeList;
 let incomeTotal = 0;
@@ -78,12 +81,17 @@ fetch("http://localhost:3000/subcategories")
 // login form submit
 usernameSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    let userData = {
-        username: usernameInputField.value
+    if(usernameInputField.value === "") {
+        loginError.style.display = 'block'
+        setTimeout(() => {loginError.style.display = 'none'}, 5000)
+    } else {
+        let userData = {
+            username: usernameInputField.value
+        }
+        loginUser(userData);
+        loginContainer.style.display = 'none'
+        myBudgetContainer.style.display = 'block'
     }
-    loginUser(userData);
-    loginContainer.style.display = 'none'
-    myBudgetContainer.style.display = 'block'
 })
 
 // get current user info
@@ -99,36 +107,43 @@ function loginUser(userData) {
 
     fetch('http://localhost:3000/users', configObj)
         .then(res => res.json())
-        .then((json) => {
-            console.log(json)
-            currentUser = json;
-        budgets = json.included;
-        console.log(currentUser);
-        incomeList = budgets.filter(budget => {
-            return budget.attributes.category === "income"
-        })
-        expenseList = budgets.filter(budget => {
-            return budget.attributes.category === "expense"
-        })
+        .then(json => {
+            currentUserId = json.data.id;
+            console.log(currentUserId)
 
-        const ourCount = {};
+        fetch(`http://localhost:3000/users/` + currentUserId)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                budgets = json.included;
 
-        expenseList.forEach(expense => {
-            if(!ourCount[expense.attributes.subcategory.name]){
-        ourCount[expense.attributes.subcategory.name] = 0;
-        }
-        ourCount[expense.attributes.subcategory.name]+= expense.attributes.amount;
-        });
+                incomeList = budgets.filter(budget => {
+                    return budget.attributes.category === "income"
+                });
+                expenseList = budgets.filter(budget => {
+                    return budget.attributes.category === "expense"
+                });
+                console.log(incomeList)
+                const subcategoryObj = {};
 
+                expenseList.forEach(expense => {
+                    if(!subcategoryObj[expense.attributes.subcategory.name]){
+                        subcategoryObj[expense.attributes.subcategory.name] = 0;
+                    }
+                    subcategoryObj[expense.attributes.subcategory.name]+= expense.attributes.amount;
 
-        subcategoryChart.data.labels = Object.keys(ourCount);
-        console.log(subcategoryChart.data.labels)
-        subcategoryChart.data.datasets.data = Object.values(ourCount);
+                })
 
+            console.log(expenseList)
+            renderIncome(incomeList);
+            renderExpense(expenseList);
 
-        console.log(expenseList)
-        renderIncome(incomeList);
-        renderExpense(expenseList);
-        
-    });
+            });
 }
+
+logoutBtn.addEventListener('click', function(e) {
+    e.preventDefault()
+    location.reload()
+})
+
+
