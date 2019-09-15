@@ -16,7 +16,7 @@
         <div id="login-container">
             <div class="card">
                 <div class="container">
-                        <nav class="navbar navbar-light" style="background-color: white">
+                        <nav class="navbar navbar-light">
                                 <a class="navbar-brand">
                                     <img src="myBudget-logo.png"></img>
                                 </a>
@@ -29,7 +29,7 @@
                         <div class="form-group">
                                 <input type="text" id="username" placeholder="Username" name="username" value="" required>
                                     <div class="invalid-feedback">
-                                        Please choose a username.
+                                        Please enter a username.
                                     </div>
                                     <br>
                                 <button class="btn btn-success" id="login-button" type="submit">Login</button>
@@ -42,10 +42,11 @@
             <div class="card">
                 <div class="card-body">
                     <div class="container">
-                        <nav class="navbar navbar-light" style="background-color: white">
+                        <nav class="navbar navbar-light">
                             <a class="navbar-brand">
                                 <img src="myBudget-logo.png"></img>
                             </a>
+                            <button class="btn btn-outline-success" id="logout-button" type="submit">Logout</button>
                         </nav>
                     </div>
                     <div class="container">
@@ -87,7 +88,7 @@
                                     <br>
                                     <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
                                     <input placeholder="amount" id="expense-amount" type="number" name="amount" value="">
-                                    <input id="expense-submit-button" type="submit" value="-">
+                                    <input id="expense-submit-button" type="submit" value="&#8211;">
                                 </div>
                             </form>
                         </div>
