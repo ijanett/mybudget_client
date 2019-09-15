@@ -1,0 +1,31 @@
+* {
+    font-family: 'Old Standard TT', serif;
+}
+
+#login-container {
+    display: block;
+}
+
+#welcome-msg {
+    padding: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.form-group {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn-success {
+    margin-top: 10px;
+}
+
+#myBudget-container {
+    display: none;
+}
+
+#end-budget-container {
+    margin-top: 30px;
+    text-align: center;
+}
