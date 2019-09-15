@@ -1,3 +1,7 @@
+const loginContainer = document.querySelector("#login-container")
+const myBudgetContainer = document.querySelector("#myBudget-container")
+const usernameInputField = document.getElementById("username")
+const usernameSubmitBtn = document.querySelector(".btn-success")
 const newBudgetContainer = document.querySelector("#end-budget-container");
 // const budgetContainer = document.querySelector("#budget-container");
 const subcategoryDropdown = document.getElementById("subcategory-dropdown");
@@ -5,45 +9,47 @@ const subcategoriesContainer = document.getElementById("subcategories-container"
 const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
-const incomeList = document.getElementById("income-list");
+const incomeListContainer = document.getElementById("income-list");
 const incomeTotalContainer = document.getElementById("income-total");
 const expenseInputDescription = document.getElementById("expense-description");
 const expenseInputAmount = document.getElementById("expense-amount");
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
-const expenseList = document.getElementById("expense-list");
+const expenseListContainer = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
-let user;
+let currentUser;
 let budgets;
-let income;
+let incomeList;
 let incomeTotal = 0;
-let expense;
+let expenseList;
 let expenseTotal = 0;
 let newBudget = 0;
-let subcategoryNames;
 let subcategories = [];
+let subcategoriesData = [];
+let uniqExpenseNames;
+let expenseSums;
 
 
 function renderIncome(objArray) {
     objArray.forEach(obj => {
-        incomeList.innerHTML += `
-            <li>${obj.attributes.description} $${obj.attributes.amount}</li>
+        incomeListContainer.innerHTML += `
+            <p>+ ${obj.attributes.description} $${obj.attributes.amount}</p>
         `
         incomeTotal += obj.attributes.amount
         newBudget += incomeTotal
     })
-    newBudgetContainer.innerHTML += `
+    newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: $${newBudget}</h4>
     `
-    incomeTotalContainer.innerHTML += `
+    incomeTotalContainer.innerHTML = `
         <h4>Income Total: $${incomeTotal}</h4>
     `
 }
 
 function renderExpense(objArray) {
     objArray.forEach(obj => {
-        expenseList.innerHTML += `
-            <li>${obj.attributes.description} $${obj.attributes.amount}</li>
+        expenseListContainer.innerHTML += `
+            <p>- ${obj.attributes.description} $${obj.attributes.amount}</p>
         `
         expenseTotal += obj.attributes.amount
         newBudget = incomeTotal - expenseTotal
@@ -51,27 +57,13 @@ function renderExpense(objArray) {
     newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: $${newBudget}</h4>
     `
-    expenseTotalContainer.innerHTML += `
+    expenseTotalContainer.innerHTML = `
         <h4>Expense Total: $${expenseTotal}</h4>
     `
 }
 
-// function renderBudget(incomeTotal, expenseTotal) {
-//     remainingBudget += incomeTotal
-//     remainingBudget -= expenseTotal
-//     console.log(remainingBudget)
-//     newBudgetContainer.innerHTML += `
-//         <h4>Remaining Budget: $${remainingBudget}</h4>
-//     `
-// };
-
-// expense form submit
-expenseSubmitBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-})
 
 // get subcategories and add to dropdown option values
-// store in array
 fetch("http://localhost:3000/subcategories")
     .then(res => res.json())
     .then(json => {
@@ -79,32 +71,68 @@ fetch("http://localhost:3000/subcategories")
             subcategoryDropdown.innerHTML += `
             <option value="${obj.id}">${obj.attributes.name}</option>
             `
-            subcategoryNames = obj.attributes.name;
-            subcategories.push(subcategoryNames);
         })
     })
 
-fetch("http://localhost:3000/users/1")
-    .then(res => res.json())
-    .then(json => {
-        user = json;
+usernameSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    let userData = {
+        username: usernameInputField.value
+    }
+    loginUser(userData);
+    loginContainer.style.display = 'none'
+    myBudgetContainer.style.display = 'block'
+})
+
+function loginUser(userData) {
+    let configObj = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    }
+
+    // make input text field and button, querySelect input field, add event listener to button
+    // call fetch function loginUser, pass in user data
+
+    fetch('http://localhost:3000/users', configObj)
+        .then(res => res.json())
+        .then((json) => {
+            console.log(json)
+            currentUser = json;
         budgets = json.included;
-        console.log(user);
-        income = budgets.filter(budget => {
+        console.log(currentUser);
+        incomeList = budgets.filter(budget => {
             return budget.attributes.category === "income"
         })
-        expense = budgets.filter(budget => {
+        expenseList = budgets.filter(budget => {
             return budget.attributes.category === "expense"
         })
-        console.log(expense)
-        renderIncome(income);
-        renderExpense(expense);
-        
-        // budgetContainer.innerHTML += `
-        // <h3>${user.data.attributes.username}</h3>
-        // `
 
+        const ourCount = {};
+
+        expenseList.forEach(expense => {
+            if(!ourCount[expense.attributes.subcategory.name]){
+        ourCount[expense.attributes.subcategory.name] = 0;
+        }
+        ourCount[expense.attributes.subcategory.name]+= expense.attributes.amount;
+        });
+
+
+        subcategoryChart.data.labels = Object.keys(ourCount);
+        console.log(subcategoryChart.data.labels)
+        subcategoryChart.data.datasets.data = Object.values(ourCount);
+
+
+        console.log(expenseList)
+        renderIncome(incomeList);
+        renderExpense(expenseList);
+        
     });
+}
+        
 
 // function renderUsers(json) {
 //     Object.keys(json).forEach(function(key) {
