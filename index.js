@@ -48,6 +48,24 @@ incomeSubmitBtn.addEventListener('click', function(e) {
     
 })
 
+// expense form submit
+expenseSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    let formData = {
+        amount: expenseInputAmount.value,
+        category: 1,
+        description: expenseInputDescription.value,
+        subcategory_id: subcategoryDropdown.value,
+        user_id: currentUserId
+    }
+
+    expenseInputDescription.value = ""
+    expenseInputAmount.value = ""
+
+    postBudget(formData);
+    
+})
+
 // post new budget
 function postBudget(budgetData) {
     let configObj = {
@@ -131,16 +149,18 @@ function renderIncome(objArray) {
 function renderExpense(objArray) {
     objArray.forEach(obj => {
         expenseListContainer.innerHTML += `
-            <p>- ${obj.attributes.description} $${obj.attributes.amount}</p>
+            <p>- ${obj.attributes.description} $${formatTotal(obj.attributes.amount)}</p>
         `
         expenseTotal += obj.attributes.amount
-        newBudget = incomeTotal - expenseTotal
+        // console.log(expenseTotal)
+        newBudget = formatTotal(incomeTotal - expenseTotal)
+        // console.log(newBudget)
     })
     newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: $${newBudget}</h4>
     `
     expenseTotalContainer.innerHTML = `
-        <h4>Expense Total: $${expenseTotal}</h4>
+        <h4>Expense Total: $${formatTotal(expenseTotal)}</h4>
     `
 }
 
