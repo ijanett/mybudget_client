@@ -17,7 +17,7 @@
     text-align: center;
 }
 
-.btn-success {
+.btn-success {   /* login button */
     margin-top: 10px;
 }
 
@@ -28,4 +28,68 @@
 #end-budget-container {
     margin-top: 30px;
     text-align: center;
+}
+
+#income-submit-button, #expense-submit-button {
+    background-color: white;  
+    border-radius: 50%;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+#income-submit-button {
+  border: 2px solid #4CAF50;
+  color: #4CAF50;
+}
+
+#expense-submit-button {
+    padding-left: 9px;
+    padding-right: 9px;
+    border: 2px solid rgb(220, 49, 49);
+    color: rgb(220, 49, 49);
+}
+
+#income-submit-button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#expense-submit-button:hover {
+    background-color: rgb(220, 49, 49);
+    color: white;
+  }
+
+.navbar-light {
+    background-color: white;
+    padding: 2px;
+}
+
+.btn-outline-success {    /* logout button */
+    justify-content: right;
+    font-size: 12px;
+}
+
+.invalid-feedback {
+    display: none;
+}
+
+#invalid-income, #invalid-expense {
+    color: red;
+    font-size: 12px;
+}
+
+#invalid-income {
+    display: none;
+}
+
+#invalid-expense {
+    display: none;
+}
+
+img {
+    align-content: left;
 }
