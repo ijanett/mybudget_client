@@ -67,8 +67,11 @@
                                 <form id="income-form">
                                     <div class="form-group">
                                         <input placeholder="income description" id="income-description" type="text" name="description" value="">
-                                        <input placeholder="amount" id="income-amount" type="number" name="amount" value="">
+                                        <input placeholder="amount" id="income-amount" type="number" step="10" min="0" name="amount" value="">
                                         <input id="income-submit-button" type="submit" value="+">
+                                        <div id="invalid-income">
+                                                Values can't be empty or negative.
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -87,8 +90,11 @@
                                             <select id="subcategory-dropdown" name="name"></select>
                                     <br>
                                     <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
-                                    <input placeholder="amount" id="expense-amount" type="number" name="amount" value="">
+                                    <input placeholder="amount" id="expense-amount" type="number" step="10" min="0" name="amount" value="">
                                     <input id="expense-submit-button" type="submit" value="&#8211;">
+                                    <div id="invalid-expense">
+                                            Values can't be empty or negative.
+                                    </div>
                                 </div>
                             </form>
                         </div>

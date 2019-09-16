@@ -10,11 +10,13 @@ const subcategoriesContainer = document.getElementById("subcategories-container"
 const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
+const incomeSbmtError = document.querySelector("#invalid-income")
 const incomeListContainer = document.getElementById("income-list");
 const incomeTotalContainer = document.getElementById("income-total");
 const expenseInputDescription = document.getElementById("expense-description");
 const expenseInputAmount = document.getElementById("expense-amount");
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
+const expenseSbmtError = document.querySelector("#invalid-expense")
 const expenseListContainer = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
@@ -35,17 +37,22 @@ let expenseSums;
 // income form submit
 incomeSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    let formData = {
-        amount: incomeInputAmount.value,
-        category: 0,
-        description: incomeInputDescription.value,
-        user_id: currentUserId
-    }
-    incomeInputDescription.value = ""
-    incomeInputAmount.value = ""
-    
-    postBudget(formData);
-    
+    if(incomeInputDescription.value === "" || incomeInputAmount.value === "" || incomeInputAmount.value < 0) {
+        incomeSbmtError.style.display = 'block';
+        
+        setTimeout(() => {incomeSbmtError.style.display = 'none'}, 4000);
+    } else {
+        let formData = {
+            amount: incomeInputAmount.value,
+            category: 0,
+            description: incomeInputDescription.value,
+            user_id: currentUserId
+        }
+        incomeInputDescription.value = ""
+        incomeInputAmount.value = ""
+        
+        postBudget(formData);
+    }    
 })
 
 // expense form submit
@@ -182,7 +189,7 @@ usernameSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
     if(usernameInputField.value === "") {
         loginError.style.display = 'block'
-        setTimeout(() => {loginError.style.display = 'none'}, 5000)
+        setTimeout(() => {loginError.style.display = 'none'}, 4000)
     } else {
         let userData = {
             username: usernameInputField.value
