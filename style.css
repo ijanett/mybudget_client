@@ -1,5 +1,5 @@
 * {
-    font-family: 'Old Standard TT', serif;
+    font-family: 'Muli', sans-serif;
 }
 
 #login-container {
@@ -42,13 +42,15 @@
 }
 
 #income-submit-button {
-  border: 2px solid #4CAF50;
-  color: #4CAF50;
+    padding-left: 9px;
+    padding-right: 9px;
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
 }
 
 #expense-submit-button {
-    padding-left: 9px;
-    padding-right: 9px;
+    padding-left: 10px;
+    padding-right: 10px;
     border: 2px solid rgb(220, 49, 49);
     color: rgb(220, 49, 49);
 }
@@ -88,6 +90,11 @@
 
 #invalid-expense {
     display: none;
+}
+
+#income-list p, #expense-list p {
+    font-family: 'Unica One', cursive;
+    font-size: 15px;
 }
 
 img {
