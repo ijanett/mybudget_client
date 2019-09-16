@@ -89,20 +89,41 @@ function clearAllData() {
     clearBudgetTotals()
 }
 
+// 3464.3563 -> 3,464.36  // 7000 -> 7,000.00
+function formatTotal(total) {
+    let totalSplit, int, dec;
+
+    total = Math.abs(total);
+    total = total.toFixed(2);
+
+    totalSplit = total.split('.');
+
+    int = totalSplit[0];
+    if(int.length > 3) {
+        int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+    }
+
+    dec = totalSplit[1];
+
+    return int + '.' + dec;
+}
+
 // display income info
 function renderIncome(objArray) {
     objArray.forEach(obj => {
         incomeListContainer.innerHTML += `
-            <p>+ ${obj.attributes.description} $${obj.attributes.amount}</p>
+            <p>+ ${obj.attributes.description} $${formatTotal(obj.attributes.amount)}</p>
         `
         incomeTotal += obj.attributes.amount
-        newBudget = incomeTotal
+        newBudget = formatTotal(incomeTotal)
+        
     })
+
     newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: $${newBudget}</h4>
     `
     incomeTotalContainer.innerHTML = `
-        <h4>Income Total: $${incomeTotal}</h4>
+        <h4>Income Total: $${formatTotal(incomeTotal)}</h4>
     `
 }
 
