@@ -31,6 +31,64 @@ let subcategoriesData = [];
 let uniqExpenseNames;
 let expenseSums;
 
+
+// income form submit
+incomeSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    let formData = {
+        amount: incomeInputAmount.value,
+        category: 0,
+        description: incomeInputDescription.value,
+        user_id: currentUserId
+    }
+    incomeInputDescription.value = ""
+    incomeInputAmount.value = ""
+    
+    postBudget(formData);
+    
+})
+
+// post new budget
+function postBudget(budgetData) {
+    let configObj = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(budgetData)
+    }
+
+    fetch('http://localhost:3000/budgets', configObj)
+        .then(res => res.json())
+
+    clearAllData()
+    getUserBudgetData(currentUserId)
+}
+
+function clearIncomeTotals() {
+    incomeTotalContainer.innerHTML = ""
+    incomeListContainer.innerHTML = ""
+    incomeTotal = 0
+}
+
+function clearBudgetTotals() {
+    newBudgetContainer.innerHTML = ""
+    newBudget = 0
+}
+
+function clearExpenseTotals() {
+    expenseTotalContainer.innerHTML = ""
+    expenseListContainer.innerHTML = ""
+    expenseTotal = 0
+}
+
+function clearAllData() {
+    clearIncomeTotals()
+    clearExpenseTotals()
+    clearBudgetTotals()
+}
+
 // display income info
 function renderIncome(objArray) {
     objArray.forEach(obj => {
@@ -38,7 +96,7 @@ function renderIncome(objArray) {
             <p>+ ${obj.attributes.description} $${obj.attributes.amount}</p>
         `
         incomeTotal += obj.attributes.amount
-        newBudget += incomeTotal
+        newBudget = incomeTotal
     })
     newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: $${newBudget}</h4>
@@ -111,34 +169,41 @@ function loginUser(userData) {
             currentUserId = json.data.id;
             console.log(currentUserId)
 
-        fetch(`http://localhost:3000/users/` + currentUserId)
-            .then(res => res.json())
-            .then(json => {
-                console.log(json)
-                budgets = json.included;
 
-                incomeList = budgets.filter(budget => {
-                    return budget.attributes.category === "income"
-                });
-                expenseList = budgets.filter(budget => {
-                    return budget.attributes.category === "expense"
-                });
-                console.log(incomeList)
-                const subcategoryObj = {};
+            getUserBudgetData(currentUserId)
+        });
+}
 
-                expenseList.forEach(expense => {
-                    if(!subcategoryObj[expense.attributes.subcategory.name]){
-                        subcategoryObj[expense.attributes.subcategory.name] = 0;
-                    }
-                    subcategoryObj[expense.attributes.subcategory.name]+= expense.attributes.amount;
+// render budget info
+function getUserBudgetData(userId) {
+    fetch(`http://localhost:3000/users/` + userId)
+        .then(res => res.json())
+        .then(json => {
+            console.log(json)
+            budgets = json.included;
 
-                })
+            incomeList = budgets.filter(budget => {
+                return budget.attributes.category === "income"
+            });
+            expenseList = budgets.filter(budget => {
+                return budget.attributes.category === "expense"
+            });
+            console.log(incomeList)
 
-            console.log(expenseList)
+                
+            // create obj for chart labels and data
+            const subcategoryObj = {};
+
+            expenseList.forEach(expense => {
+                if(!subcategoryObj[expense.attributes.subcategory.name]){
+                    subcategoryObj[expense.attributes.subcategory.name] = 0;
+                }
+                subcategoryObj[expense.attributes.subcategory.name]+= expense.attributes.amount;
+
+            })
+
             renderIncome(incomeList);
             renderExpense(expenseList);
-
-            });
         });
 }
 
@@ -146,5 +211,4 @@ logoutBtn.addEventListener('click', function(e) {
     e.preventDefault()
     location.reload()
 })
-
 
