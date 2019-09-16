@@ -58,18 +58,25 @@ incomeSubmitBtn.addEventListener('click', function(e) {
 // expense form submit
 expenseSubmitBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    let formData = {
-        amount: expenseInputAmount.value,
-        category: 1,
-        description: expenseInputDescription.value,
-        subcategory_id: subcategoryDropdown.value,
-        user_id: currentUserId
+    if(expenseInputDescription.value === "" || expenseInputAmount.value === "" || expenseInputAmount.value < 0) {
+        expenseSbmtError.style.display = 'block';
+        
+        setTimeout(() => {expenseSbmtError.style.display = 'none'}, 4000);
+    } else {
+
+        let formData = {
+            amount: expenseInputAmount.value,
+            category: 1,
+            description: expenseInputDescription.value,
+            subcategory_id: subcategoryDropdown.value,
+            user_id: currentUserId
+        }
+
+        expenseInputDescription.value = ""
+        expenseInputAmount.value = ""
+
+        postBudget(formData);
     }
-
-    expenseInputDescription.value = ""
-    expenseInputAmount.value = ""
-
-    postBudget(formData);
     
 })
 
@@ -137,7 +144,7 @@ function formatTotal(total) {
 function renderIncome(objArray) {
     objArray.forEach(obj => {
         incomeListContainer.innerHTML += `
-            <p>+ ${obj.attributes.description} $${formatTotal(obj.attributes.amount)}</p>
+            <p>+ ${obj.attributes.description.toUpperCase()} $${formatTotal(obj.attributes.amount)}</p>
         `
         incomeTotal += obj.attributes.amount
         newBudget = formatTotal(incomeTotal)
@@ -156,7 +163,7 @@ function renderIncome(objArray) {
 function renderExpense(objArray) {
     objArray.forEach(obj => {
         expenseListContainer.innerHTML += `
-            <p>- ${obj.attributes.description} $${formatTotal(obj.attributes.amount)}</p>
+            <p>- ${obj.attributes.description.toUpperCase()} $${formatTotal(obj.attributes.amount)}</p>
         `
         expenseTotal += obj.attributes.amount
         // console.log(expenseTotal)
