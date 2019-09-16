@@ -16,23 +16,23 @@
         <div id="login-container">
             <div class="card">
                 <div class="container">
-                        <nav class="navbar navbar-light">
-                                <a class="navbar-brand">
-                                    <img src="myBudget-logo.png"></img>
-                                </a>
-                            </nav>
+                    <nav class="navbar navbar-light">
+                        <a class="navbar-brand">
+                            <img src="myBudget-logo.png"></img>
+                        </a>
+                        </nav>
                     <div id="welcome-msg">
                         <h2>Welcome to myBudget!</h2>
                         <p>Please login to calculate your monthly budget:</p>
                     </div>
                     <form>
                         <div class="form-group">
-                                <input type="text" id="username" placeholder="Username" name="username" value="" required>
-                                    <div class="invalid-feedback">
-                                        Please enter a username.
-                                    </div>
-                                    <br>
-                                <button class="btn btn-success" id="login-button" type="submit">Login</button>
+                            <input type="text" id="username" placeholder="Username" name="username" value="" required>
+                                <div class="invalid-feedback">
+                                    Please enter a username.
+                                </div>
+                                <br>
+                            <button class="btn btn-success" id="login-button" type="submit">Login</button>
                         </div>
                     </form>
                 </div>
@@ -75,36 +75,45 @@
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm" style="align-content: center">
-                                <div id="income-list">
-                                </div>
+                                <table class="table table-borderless">
+                                    <tbody id="income-list">
+
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         <div class="row">
-                                <div class="col-sm">
-                                    <div id="expense-total">
-                                        <h4>Expense Total: $0</h4>
-                                    </div>
-                                    <form id="expense-form">
-                                        <div class="form-group">
-                                            <select id="subcategory-dropdown" name="name"></select>
-                                    <br>
-                                    <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
-                                    <input placeholder="amount" id="expense-amount" type="number" step="10" min="0" name="amount" value="">
-                                    <input id="expense-submit-button" type="submit" value="&#8211;">
-                                    <div id="invalid-expense">
-                                            Values can't be empty or negative.
-                                    </div>
+                            <div class="col-sm">
+                                <div id="expense-total">
+                                    <h4>Expense Total: $0</h4>
                                 </div>
-                            </form>
+                                <form id="expense-form">
+                                    <div class="form-group">
+                                        <select id="subcategory-dropdown" name="name"></select>
+                                        <input placeholder="expense description" id="expense-description" type="text" name="description" value="">
+                                        <input placeholder="amount" id="expense-amount" type="number" step="10" min="0" name="amount" value="">
+                                        <input id="expense-submit-button" type="submit" value="&#8211;">
+                                        <div id="invalid-expense">
+                                                Values can't be empty or negative.
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="col-sm" style="align-content: center">
-                            <div id="expense-list">
+                        <div class="row">
+                            <div class="col-sm" style="align-content: center">
+                                <table class="table table-borderless">
+                                    <tbody id="expense-list">
+                                        
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </body>

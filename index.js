@@ -144,7 +144,10 @@ function formatTotal(total) {
 function renderIncome(objArray) {
     objArray.forEach(obj => {
         incomeListContainer.innerHTML += `
-            <p>+ ${obj.attributes.description.toUpperCase()} $${formatTotal(obj.attributes.amount)}</p>
+            <tr>
+                <td>${obj.attributes.description.toUpperCase()}</td>
+                <td>+ $${formatTotal(obj.attributes.amount)}</td>
+            </tr>
         `
         incomeTotal += obj.attributes.amount
         newBudget = formatTotal(incomeTotal)
@@ -163,7 +166,10 @@ function renderIncome(objArray) {
 function renderExpense(objArray) {
     objArray.forEach(obj => {
         expenseListContainer.innerHTML += `
-            <p>- ${obj.attributes.description.toUpperCase()} $${formatTotal(obj.attributes.amount)}</p>
+            <tr>
+                <td>${obj.attributes.description.toUpperCase()}</td>
+                <td>- $${formatTotal(obj.attributes.amount)}</td>
+            </tr>
         `
         expenseTotal += obj.attributes.amount
         // console.log(expenseTotal)
