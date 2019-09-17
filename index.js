@@ -20,6 +20,8 @@ const expenseSbmtError = document.querySelector("#invalid-expense")
 const expenseListContainer = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
+let budgId;
+let deleteBtn;
 let currentUser;
 let currentUserId;
 let budgets;
@@ -32,6 +34,92 @@ let subcategories = [];
 let subcategoriesData = [];
 let uniqExpenseNames;
 let expenseSums;
+let budgetHolder;
+let budgetType;
+
+
+// get subcategories and add to dropdown options
+fetch("http://localhost:3000/subcategories")
+    .then(res => res.json())
+    .then(json => {
+        json.data.forEach(function(obj) {
+            subcategoryDropdown.innerHTML += `
+            <option value="${obj.id}">${obj.attributes.name}</option>
+            `
+        })
+    })
+
+
+// login form submit
+usernameSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if(usernameInputField.value === "") {
+        loginError.style.display = 'block'
+        setTimeout(() => {loginError.style.display = 'none'}, 4000)
+    } else {
+        let userData = {
+            username: usernameInputField.value
+        }
+        loginUser(userData);
+        loginContainer.style.display = 'none'
+        myBudgetContainer.style.display = 'block'
+    }
+})
+
+// get current user info
+function loginUser(userData) {
+    let configObj = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    }
+
+    fetch('http://localhost:3000/users', configObj)
+        .then(res => res.json())
+        .then(json => {
+            currentUserId = json.data.id;
+            console.log(currentUserId)
+
+
+            getUserBudgetData(currentUserId)
+        });
+}
+
+// render user budget info
+function getUserBudgetData(userId) {
+    fetch(`http://localhost:3000/users/` + userId)
+        .then(res => res.json())
+        .then(json => {
+            console.log(json)
+            budgets = json.included;
+
+            incomeList = budgets.filter(budget => {
+                return budget.attributes.category === "income"
+            });
+            expenseList = budgets.filter(budget => {
+                return budget.attributes.category === "expense"
+            });
+            console.log(incomeList)
+
+                
+            // create obj for chart labels and data
+            const subcategoryObj = {};
+
+            expenseList.forEach(expense => {
+                if(!subcategoryObj[expense.attributes.subcategory.name]){
+                    subcategoryObj[expense.attributes.subcategory.name] = 0;
+                }
+                subcategoryObj[expense.attributes.subcategory.name]+= expense.attributes.amount;
+
+            })
+
+            renderIncome(incomeList);
+            renderExpense(expenseList);
+        });
+}
 
 
 // income form submit
@@ -122,7 +210,7 @@ function clearAllData() {
 }
 
 // 3464.3563 -> 3,464.36  // 7000 -> 7,000.00
-function formatTotal(total) {
+function formatTotal(total, type) {
     let totalSplit, int, dec;
 
     total = Math.abs(total);
@@ -137,135 +225,101 @@ function formatTotal(total) {
 
     dec = totalSplit[1];
 
-    return int + '.' + dec;
+    return (type === 'exp' ? '-' : '+') + ' ' + '$' + int + '.' + dec;
+}
+
+function calcBudget(total, type) {
+    if(total > 0) {
+        type = 'inc'
+        newBudgetContainer.style.color = '#212529'
+    } else {
+        type = 'exp'
+        newBudgetContainer.style.color = 'red'
+    }
+    // total > 0 ? type = 'inc' : type = 'exp'
+    newBudget = formatTotal(total, type)
 }
 
 // display income info
 function renderIncome(objArray) {
     objArray.forEach(obj => {
+        let incDesc = obj.attributes.description
+        let incAmt = obj.attributes.amount
+        budgId = obj.id
+
         incomeListContainer.innerHTML += `
             <tr>
-                <td>${obj.attributes.description.toUpperCase()}</td>
-                <td>+ $${formatTotal(obj.attributes.amount)}</td>
+                <td>${incDesc.toUpperCase()}</td>
+                <td>${formatTotal(incAmt, 'inc')}</td>
+                <td><div class="delete-item" id="item-${budgId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `
+        deleteBtn = document.querySelector(`#item-${budgId}`);
+        deleteBtn.addEventListener('click', function() {
+            deleteItem(budgId, currentUserId)
+        })
+
         incomeTotal += obj.attributes.amount
-        newBudget = formatTotal(incomeTotal)
-        
+        budgetHolder = incomeTotal
+        calcBudget(budgetHolder, budgetType)
+
     })
 
     newBudgetContainer.innerHTML = `
-        <h4>Remaining Budget: $${newBudget}</h4>
+        <h4>Remaining Budget: ${newBudget}</h4>
     `
     incomeTotalContainer.innerHTML = `
-        <h4>Income Total: $${formatTotal(incomeTotal)}</h4>
+        <h4>Income Total: ${formatTotal(incomeTotal, 'inc')}</h4>
     `
 }
 
 // display expense info
 function renderExpense(objArray) {
     objArray.forEach(obj => {
+        let expDesc = obj.attributes.description
+        let expAmt = obj.attributes.amount
+        let expId = obj.id
+        let userId = obj.relationships.user.data.id
+
         expenseListContainer.innerHTML += `
             <tr>
-                <td>${obj.attributes.description.toUpperCase()}</td>
-                <td>- $${formatTotal(obj.attributes.amount)}</td>
+                <td>${expDesc.toUpperCase()}</td>
+                <td>${formatTotal(expAmt, 'exp')}</td>
             </tr>
         `
         expenseTotal += obj.attributes.amount
         // console.log(expenseTotal)
-        newBudget = formatTotal(incomeTotal - expenseTotal)
-        // console.log(newBudget)
+        budgetHolder = incomeTotal - expenseTotal
+        calcBudget(budgetHolder, budgetType)
+        
     })
     newBudgetContainer.innerHTML = `
-        <h4>Remaining Budget: $${newBudget}</h4>
+        <h4>Remaining Budget: ${newBudget}</h4>
     `
     expenseTotalContainer.innerHTML = `
-        <h4>Expense Total: $${formatTotal(expenseTotal)}</h4>
+        <h4>Expense Total: ${formatTotal(expenseTotal, 'exp')}</h4>
     `
+
+
+
 }
 
 
-// get subcategories and add to dropdown options
-fetch("http://localhost:3000/subcategories")
-    .then(res => res.json())
-    .then(json => {
-        json.data.forEach(function(obj) {
-            subcategoryDropdown.innerHTML += `
-            <option value="${obj.id}">${obj.attributes.name}</option>
-            `
-        })
-    })
-
-
-// login form submit
-usernameSubmitBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if(usernameInputField.value === "") {
-        loginError.style.display = 'block'
-        setTimeout(() => {loginError.style.display = 'none'}, 4000)
-    } else {
-        let userData = {
-            username: usernameInputField.value
+function deleteItem(budgId, currentUserId) {
+        let configObj = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({id: budgId})
         }
-        loginUser(userData);
-        loginContainer.style.display = 'none'
-        myBudgetContainer.style.display = 'block'
-    }
-})
-
-// get current user info
-function loginUser(userData) {
-    let configObj = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(userData)
-    }
-
-    fetch('http://localhost:3000/users', configObj)
-        .then(res => res.json())
-        .then(json => {
-            currentUserId = json.data.id;
-            console.log(currentUserId)
-
-
-            getUserBudgetData(currentUserId)
-        });
-}
-
-// render budget info
-function getUserBudgetData(userId) {
-    fetch(`http://localhost:3000/users/` + userId)
-        .then(res => res.json())
-        .then(json => {
-            console.log(json)
-            budgets = json.included;
-
-            incomeList = budgets.filter(budget => {
-                return budget.attributes.category === "income"
-            });
-            expenseList = budgets.filter(budget => {
-                return budget.attributes.category === "expense"
-            });
-            console.log(incomeList)
-
-                
-            // create obj for chart labels and data
-            const subcategoryObj = {};
-
-            expenseList.forEach(expense => {
-                if(!subcategoryObj[expense.attributes.subcategory.name]){
-                    subcategoryObj[expense.attributes.subcategory.name] = 0;
-                }
-                subcategoryObj[expense.attributes.subcategory.name]+= expense.attributes.amount;
-
+        fetch('http://localhost:3000/budgets/' + budgId, configObj)
+            .then(res => res.json())
+            .then(json => {
+                clearAllData()
+                getUserBudgetData(currentUserId)
             })
-
-            renderIncome(incomeList);
-            renderExpense(expenseList);
-        });
 }
 
 logoutBtn.addEventListener('click', function(e) {
