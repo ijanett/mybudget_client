@@ -37,6 +37,71 @@ let budgetHolder;
 let budgetType;
 
 
+
+// income form submit
+incomeSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if(incomeInputDescription.value === "" || incomeInputAmount.value === "" || incomeInputAmount.value < 0) {
+        incomeSbmtError.style.display = 'block';
+        
+        setTimeout(() => {incomeSbmtError.style.display = 'none'}, 4000);
+    } else {
+        let formData = {
+            amount: incomeInputAmount.value,
+            category: 0,
+            description: incomeInputDescription.value,
+            user_id: currentUserId
+        }
+        incomeInputDescription.value = ""
+        incomeInputAmount.value = ""
+        
+        postBudget(formData);
+    }    
+})
+
+// expense form submit
+expenseSubmitBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if(expenseInputDescription.value === "" || expenseInputAmount.value === "" || expenseInputAmount.value < 0) {
+        expenseSbmtError.style.display = 'block';
+        
+        setTimeout(() => {expenseSbmtError.style.display = 'none'}, 4000);
+    } else {
+
+        let formData = {
+            amount: expenseInputAmount.value,
+            category: 1,
+            description: expenseInputDescription.value,
+            subcategory_id: subcategoryDropdown.value,
+            user_id: currentUserId
+        }
+
+        expenseInputDescription.value = ""
+        expenseInputAmount.value = ""
+
+        postBudget(formData);
+    }
+    
+})
+
+// post new budget
+function postBudget(budgetData) {
+    let configObj = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(budgetData)
+    }
+
+    fetch('http://localhost:3000/budgets', configObj)
+        .then(res => res.json())
+
+    clearAllData()
+    getUserBudgetData(currentUserId)
+}
+
 // get subcategories and add to dropdown options
 fetch("http://localhost:3000/subcategories")
     .then(res => res.json())
@@ -120,70 +185,6 @@ function getUserBudgetData(userId) {
         });
 }
 
-
-// income form submit
-incomeSubmitBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if(incomeInputDescription.value === "" || incomeInputAmount.value === "" || incomeInputAmount.value < 0) {
-        incomeSbmtError.style.display = 'block';
-        
-        setTimeout(() => {incomeSbmtError.style.display = 'none'}, 4000);
-    } else {
-        let formData = {
-            amount: incomeInputAmount.value,
-            category: 0,
-            description: incomeInputDescription.value,
-            user_id: currentUserId
-        }
-        incomeInputDescription.value = ""
-        incomeInputAmount.value = ""
-        
-        postBudget(formData);
-    }    
-})
-
-// expense form submit
-expenseSubmitBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if(expenseInputDescription.value === "" || expenseInputAmount.value === "" || expenseInputAmount.value < 0) {
-        expenseSbmtError.style.display = 'block';
-        
-        setTimeout(() => {expenseSbmtError.style.display = 'none'}, 4000);
-    } else {
-
-        let formData = {
-            amount: expenseInputAmount.value,
-            category: 1,
-            description: expenseInputDescription.value,
-            subcategory_id: subcategoryDropdown.value,
-            user_id: currentUserId
-        }
-
-        expenseInputDescription.value = ""
-        expenseInputAmount.value = ""
-
-        postBudget(formData);
-    }
-    
-})
-
-// post new budget
-function postBudget(budgetData) {
-    let configObj = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(budgetData)
-    }
-
-    fetch('http://localhost:3000/budgets', configObj)
-        .then(res => res.json())
-
-    clearAllData()
-    getUserBudgetData(currentUserId)
-}
 
 function clearIncomeTotals() {
     incomeTotalContainer.innerHTML = ""
@@ -280,7 +281,7 @@ function renderExpense(objArray) {
             <tr>
                 <td>${expDesc.toUpperCase()}</td>
                 <td>${formatTotal(expAmt, 'exp')}</td>
-                <td><i class="icon ion-md-close-circle-outline"></i></td>
+                <td><div class="delete-item" id="inc-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `       
         expenseTotal += expObj.attributes.amount
@@ -303,24 +304,38 @@ incomeListTable.addEventListener("click", function(e) {
     console.log(incomeId)
     if(e.target.className === "icon ion-md-close-circle-outline") {
         // console.log(this)
-        let configObj = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({id: incomeId})
-        }
-        fetch('http://localhost:3000/budgets/' + incomeId, configObj)
-            .then(res => res.json())
-            .then(json => {
-                clearAllData()
-                getUserBudgetData(currentUserId)
-            })
+        deleteItem(incomeId)
     }
 })
 
 // delete items from expense list
+expenseListTable.addEventListener("click", function(e) {
+    e.preventDefault()
+    let expenseId = e.target.parentNode.id.split('-')[1]
+    console.log(expenseId)
+    if(e.target.className === "icon ion-md-close-circle-outline") {
+        // console.log(this)
+        deleteItem(expenseId)
+    }
+})
+
+// delete request
+function deleteItem(id) {
+    let configObj = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({id: id})
+    }
+    fetch('http://localhost:3000/budgets/' + id, configObj)
+        .then(res => res.json())
+        .then(json => {
+            clearAllData()
+            getUserBudgetData(currentUserId)
+        })
+}
 
 // logout
 logoutBtn.addEventListener('click', function(e) {
