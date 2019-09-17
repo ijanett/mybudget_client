@@ -225,12 +225,32 @@ function getUserBudgetData(userId) {
             renderIncome(incomeList);
             renderExpense(expenseList);
             updateChart(subcategoryChart, subLabels, chartData)
-            console.log(subcategoryChart)
+            // console.log(subcategoryChart)
 
         });
 }
 
 // no chart placeholder
+Chart.pluginService.register({
+    afterDraw: function (subcategoryChart) {
+        if (subcategoryChart.data.datasets[0].data.length === 0) {
+            // if data is present
+            var ctx = subcategoryChart.chart.ctx;
+            var width = subcategoryChart.chart.width;
+            var height = subcategoryChart.chart.height
+            subcategoryChart.clear();
+
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = "20px normal 'Helvetica Nueue'";
+            ctx.fillText('NO DATA AVAILABLE. PLEASE SUBMIT INCOME AND EXPENSE INFO.', width / 2, height / 2);
+            ctx.restore();
+        }
+
+    }
+});
+
 
 function clearIncomeTotals() {
     incomeTotalContainer.innerHTML = ""
