@@ -20,7 +20,8 @@ const expenseSbmtError = document.querySelector("#invalid-expense")
 const expenseListTable = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
-
+let subLabels;
+let chartData;
 let currentUser;
 let currentUserId;
 let budgets;
@@ -52,6 +53,7 @@ incomeSubmitBtn.addEventListener('click', function(e) {
             description: incomeInputDescription.value,
             user_id: currentUserId
         }
+        // console.log(incomeInputAmount.value)
         incomeInputDescription.value = ""
         incomeInputAmount.value = ""
         
@@ -152,6 +154,41 @@ function loginUser(userData) {
         });
 }
 
+// Chart data
+
+subcategoryChart =  new Chart(expenseChart, {
+    type: 'doughnut',
+    data: {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: [
+                'rgba(255, 90, 61, 0.89)',
+                'rgba(0, 139, 245, 0.82)',
+                'rgba(253, 236, 1, 0.91)',
+                'rgba(250, 0, 175, 0.72)',
+                'rgba(34, 211, 7, 0.81)',
+                'rgba(150, 8, 226, 0.74)'
+            ]
+        }]
+    },
+    options: {
+        legend: {
+            position: 'right',
+        }
+    }
+});
+console.log(subcategoryChart.data.datasets.data);
+
+function updateChart(subcategoryChart, labels, data) {
+    subcategoryChart.data.labels = labels;
+    subcategoryChart.data.datasets[0].data = data;
+
+    subcategoryChart.update();
+    // debugger
+}
+
+
 // render user budget info
 function getUserBudgetData(userId) {
     fetch(`http://localhost:3000/users/` + userId)
@@ -180,11 +217,20 @@ function getUserBudgetData(userId) {
 
             })
 
+            subLabels = Object.keys(subcategoryObj);
+            chartData = Object.values(subcategoryObj);
+            
+
+            
             renderIncome(incomeList);
             renderExpense(expenseList);
+            updateChart(subcategoryChart, subLabels, chartData)
+            console.log(subcategoryChart)
+
         });
 }
 
+// no chart placeholder
 
 function clearIncomeTotals() {
     incomeTotalContainer.innerHTML = ""
@@ -242,6 +288,7 @@ function calcBudget(total, type) {
 
 // display income info
 function renderIncome(objArray) {
+    console.log(objArray)
     objArray.forEach(incObj => {
         let incDesc = incObj.attributes.description
         let incAmt = incObj.attributes.amount
