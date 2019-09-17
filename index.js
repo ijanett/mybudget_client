@@ -6,7 +6,6 @@ const loginError = document.querySelector(".invalid-feedback")
 const logoutBtn = document.querySelector("#logout-button")
 const newBudgetContainer = document.querySelector("#end-budget-container");
 const subcategoryDropdown = document.getElementById("subcategory-dropdown");
-const subcategoriesContainer = document.getElementById("subcategories-container")
 const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
@@ -22,7 +21,6 @@ const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let subLabels;
 let chartData;
-let currentUser;
 let currentUserId;
 let budgets;
 let incomeList;
@@ -30,10 +28,6 @@ let incomeTotal = 0;
 let expenseList;
 let expenseTotal = 0;
 let newBudget = 0;
-let subcategories = [];
-let subcategoriesData = [];
-let uniqExpenseNames;
-let expenseSums;
 let budgetHolder;
 let budgetType;
 
@@ -155,7 +149,6 @@ function loginUser(userData) {
 }
 
 // Chart data
-
 subcategoryChart =  new Chart(expenseChart, {
     type: 'doughnut',
     data: {
@@ -219,8 +212,6 @@ function getUserBudgetData(userId) {
 
             subLabels = Object.keys(subcategoryObj);
             chartData = Object.values(subcategoryObj);
-            
-
             
             renderIncome(incomeList);
             renderExpense(expenseList);
