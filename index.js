@@ -71,7 +71,7 @@ expenseSubmitBtn.addEventListener('click', function(e) {
             subcategory_id: subcategoryDropdown.value,
             user_id: currentUserId
         }
-
+        console.log(formData)
         expenseInputDescription.value = ""
         expenseInputAmount.value = ""
 
@@ -93,8 +93,9 @@ function postBudget(budgetData) {
 
     fetch('http://localhost:3000/budgets', configObj)
         .then(res => res.json())
+        .then(res => {console.log(res)})
 
-    clearAllData()
+    clearAllData() //resets budget, income and expense totals to render new data
     getUserBudgetData(currentUserId)
 }
 
@@ -171,7 +172,6 @@ subcategoryChart =  new Chart(expenseChart, {
         }
     }
 });
-console.log(subcategoryChart.data.datasets.data);
 
 function updateChart(subcategoryChart, labels, data) {
     subcategoryChart.data.labels = labels;
@@ -187,7 +187,7 @@ function getUserBudgetData(userId) {
     fetch(`http://localhost:3000/users/` + userId)
         .then(res => res.json())
         .then(json => {
-            console.log(json)
+            console.log(json) // *sometimes* doens't return last submitted data in included
             budgets = json.included;
 
             incomeList = budgets.filter(budget => {
@@ -196,7 +196,7 @@ function getUserBudgetData(userId) {
             expenseList = budgets.filter(budget => {
                 return budget.attributes.category === "expense"
             });
-            console.log(incomeList)
+            // console.log(incomeList)
 
                 
             // create obj for chart labels and data
@@ -235,14 +235,14 @@ Chart.pluginService.register({
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.font = "20px normal 'Helvetica Nueue'";
-            ctx.fillText('NO DATA AVAILABLE. PLEASE SUBMIT INCOME AND EXPENSE INFO.', width / 2, height / 2);
+            ctx.fillText('NO EXPENSE INFO AVAILABLE. PLEASE SUBMIT YOUR MONTHLY INCOME AND EXPENSES.', width / 2, height / 2);
             ctx.restore();
         }
 
     }
 });
 
-
+// functions to reset budget, income and expense totals to render new data
 function clearIncomeTotals() {
     incomeTotalContainer.innerHTML = ""
     incomeListTable.innerHTML = ""
@@ -299,7 +299,7 @@ function calcBudget(total, type) {
 
 // display income info
 function renderIncome(objArray) {
-    console.log(objArray)
+    // console.log(objArray)
     objArray.forEach(incObj => {
         let incDesc = incObj.attributes.description
         let incAmt = incObj.attributes.amount
@@ -359,7 +359,7 @@ function renderExpense(objArray) {
 incomeListTable.addEventListener("click", function(e) {
     e.preventDefault()
     let incomeId = e.target.parentNode.id.split('-')[1]
-    console.log(incomeId)
+    // console.log(incomeId)
     if(e.target.className === "icon ion-md-close-circle-outline") {
         // console.log(this)
         deleteItem(incomeId)
@@ -370,7 +370,7 @@ incomeListTable.addEventListener("click", function(e) {
 expenseListTable.addEventListener("click", function(e) {
     e.preventDefault()
     let expenseId = e.target.parentNode.id.split('-')[1]
-    console.log(expenseId)
+    // console.log(expenseId)
     if(e.target.className === "icon ion-md-close-circle-outline") {
         // console.log(this)
         deleteItem(expenseId)
