@@ -11,17 +11,16 @@ const incomeInputDescription = document.getElementById("income-description");
 const incomeInputAmount = document.getElementById("income-amount");
 const incomeSubmitBtn = document.querySelector("#income-submit-button");
 const incomeSbmtError = document.querySelector("#invalid-income")
-const incomeListContainer = document.getElementById("income-list");
+const incomeListTable = document.getElementById("income-list");
 const incomeTotalContainer = document.getElementById("income-total");
 const expenseInputDescription = document.getElementById("expense-description");
 const expenseInputAmount = document.getElementById("expense-amount");
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
 const expenseSbmtError = document.querySelector("#invalid-expense")
-const expenseListContainer = document.getElementById("expense-list");
+const expenseListTable = document.getElementById("expense-list");
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
-let budgId;
-let deleteBtn;
+
 let currentUser;
 let currentUserId;
 let budgets;
@@ -188,7 +187,7 @@ function postBudget(budgetData) {
 
 function clearIncomeTotals() {
     incomeTotalContainer.innerHTML = ""
-    incomeListContainer.innerHTML = ""
+    incomeListTable.innerHTML = ""
     incomeTotal = 0
 }
 
@@ -199,7 +198,7 @@ function clearBudgetTotals() {
 
 function clearExpenseTotals() {
     expenseTotalContainer.innerHTML = ""
-    expenseListContainer.innerHTML = ""
+    expenseListTable.innerHTML = ""
     expenseTotal = 0
 }
 
@@ -242,27 +241,23 @@ function calcBudget(total, type) {
 
 // display income info
 function renderIncome(objArray) {
-    objArray.forEach(obj => {
-        let incDesc = obj.attributes.description
-        let incAmt = obj.attributes.amount
-        budgId = obj.id
+    objArray.forEach(incObj => {
+        let incDesc = incObj.attributes.description
+        let incAmt = incObj.attributes.amount
+        incId = incObj.id
 
-        incomeListContainer.innerHTML += `
+        incomeListTable.innerHTML += `
             <tr>
                 <td>${incDesc.toUpperCase()}</td>
                 <td>${formatTotal(incAmt, 'inc')}</td>
-                <td><div class="delete-item" id="item-${budgId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
+                <td><div class="delete-item" id="inc-${incId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `
-        deleteBtn = document.querySelector(`#item-${budgId}`);
-        deleteBtn.addEventListener('click', function() {
-            deleteItem(budgId, currentUserId)
-        })
+        // incDeleteBtn = document.querySelector(`#inc-${incId}`);
 
-        incomeTotal += obj.attributes.amount
+        incomeTotal += incObj.attributes.amount
         budgetHolder = incomeTotal
         calcBudget(budgetHolder, budgetType)
-
     })
 
     newBudgetContainer.innerHTML = `
@@ -271,27 +266,27 @@ function renderIncome(objArray) {
     incomeTotalContainer.innerHTML = `
         <h4>Income Total: ${formatTotal(incomeTotal, 'inc')}</h4>
     `
+    
 }
 
 // display expense info
 function renderExpense(objArray) {
-    objArray.forEach(obj => {
-        let expDesc = obj.attributes.description
-        let expAmt = obj.attributes.amount
-        let expId = obj.id
-        let userId = obj.relationships.user.data.id
+    objArray.forEach(expObj => {
+        let expDesc = expObj.attributes.description
+        let expAmt = expObj.attributes.amount
+        expId = expObj.id
 
-        expenseListContainer.innerHTML += `
+        expenseListTable.innerHTML += `
             <tr>
                 <td>${expDesc.toUpperCase()}</td>
                 <td>${formatTotal(expAmt, 'exp')}</td>
+                <td><i class="icon ion-md-close-circle-outline"></i></td>
             </tr>
-        `
-        expenseTotal += obj.attributes.amount
+        `       
+        expenseTotal += expObj.attributes.amount
         // console.log(expenseTotal)
         budgetHolder = incomeTotal - expenseTotal
         calcBudget(budgetHolder, budgetType)
-        
     })
     newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: ${newBudget}</h4>
@@ -299,29 +294,35 @@ function renderExpense(objArray) {
     expenseTotalContainer.innerHTML = `
         <h4>Expense Total: ${formatTotal(expenseTotal, 'exp')}</h4>
     `
-
-
-
 }
 
-
-function deleteItem(budgId, currentUserId) {
+// delete items from income list
+incomeListTable.addEventListener("click", function(e) {
+    e.preventDefault()
+    let incomeId = e.target.parentNode.id.split('-')[1]
+    console.log(incomeId)
+    if(e.target.className === "icon ion-md-close-circle-outline") {
+        // console.log(this)
         let configObj = {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({id: budgId})
+            body: JSON.stringify({id: incomeId})
         }
-        fetch('http://localhost:3000/budgets/' + budgId, configObj)
+        fetch('http://localhost:3000/budgets/' + incomeId, configObj)
             .then(res => res.json())
             .then(json => {
                 clearAllData()
                 getUserBudgetData(currentUserId)
             })
-}
+    }
+})
 
+// delete items from expense list
+
+// logout
 logoutBtn.addEventListener('click', function(e) {
     e.preventDefault()
     location.reload()
