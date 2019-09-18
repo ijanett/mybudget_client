@@ -173,13 +173,14 @@ subcategoryChart =  new Chart(expenseChart, {
         },
         tooltips: {
             callbacks: {
-              label:function(tooltipItem, data){
-                debugger
-
-                var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-                // label += tooltipItem.yLabel;
-                return '$' + label;
+              label: function(tooltipItem, data) {
+                let dataset = data.datasets[tooltipItem.datasetIndex];
+                let total = dataset.data.reduce(function(previousValue, currentValue) {
+                  return previousValue + currentValue;
+                });
+                let currentValue = dataset.data[tooltipItem.index];
+                let percentage = Math.floor(((currentValue/total) * 100)+0.5);         
+                return percentage + "%";
               }
             }
           }
@@ -239,7 +240,7 @@ function getUserBudgetData(userId) {
 Chart.pluginService.register({
     afterDraw: function (subcategoryChart) {
         if (subcategoryChart.data.datasets[0].data.length === 0) {
-            // if data is present
+            // if no data is present
             var ctx = subcategoryChart.chart.ctx;
             var width = subcategoryChart.chart.width;
             var height = subcategoryChart.chart.height
