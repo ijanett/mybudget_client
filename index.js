@@ -71,7 +71,7 @@ expenseSubmitBtn.addEventListener('click', function(e) {
             subcategory_id: subcategoryDropdown.value,
             user_id: currentUserId
         }
-        console.log(formData)
+        // console.log(formData)
         expenseInputDescription.value = ""
         expenseInputAmount.value = ""
 
@@ -143,8 +143,7 @@ function loginUser(userData) {
         .then(res => res.json())
         .then(json => {
             currentUserId = json.data.id;
-            console.log(currentUserId)
-
+            // console.log(currentUserId)
 
             getUserBudgetData(currentUserId)
         });
@@ -158,11 +157,11 @@ subcategoryChart =  new Chart(expenseChart, {
         datasets: [{
             data: [],
             backgroundColor: [
-                'rgba(255, 90, 61, 0.89)',
+                'rgb(255, 147, 40)',
+                'rgba(34, 211, 7, 0.81)',
+                'rgba(255, 0, 135, 0.78)',
                 'rgba(0, 139, 245, 0.82)',
                 'rgba(253, 236, 1, 0.91)',
-                'rgba(250, 0, 175, 0.72)',
-                'rgba(34, 211, 7, 0.81)',
                 'rgba(150, 8, 226, 0.74)'
             ]
         }]
@@ -173,17 +172,18 @@ subcategoryChart =  new Chart(expenseChart, {
         },
         tooltips: {
             callbacks: {
-              label: function(tooltipItem, data) {
+                label: function(tooltipItem, data) {
                 let dataset = data.datasets[tooltipItem.datasetIndex];
                 let total = dataset.data.reduce(function(previousValue, currentValue) {
-                  return previousValue + currentValue;
+                    return previousValue + currentValue;
                 });
                 let currentValue = dataset.data[tooltipItem.index];
                 let percentage = Math.floor(((currentValue/total) * 100)+0.5);         
                 return percentage + "%";
-              }
+                }
             }
-          }
+        },
+        cutoutPercentage: 80
     }
 });
 
@@ -202,7 +202,6 @@ function getUserBudgetData(userId) {
     fetch(`http://localhost:3000/users/` + userId)
         .then(res => res.json())
         .then(json => {
-            console.log(json) // *sometimes* doens't return last submitted data in included
             budgets = json.included;
 
             incomeList = budgets.filter(budget => {
@@ -212,8 +211,7 @@ function getUserBudgetData(userId) {
                 return budget.attributes.category === "expense"
             });
             // console.log(incomeList)
-
-                
+   
             // create obj for chart labels and data
             const subcategoryObj = {};
 
@@ -300,6 +298,7 @@ function formatTotal(total, type) {
     return (type === 'exp' ? '-' : '+') + ' ' + '$' + int + '.' + dec;
 }
 
+// function to calculate and format budget total
 function calcBudget(total, type) {
     if(total > 0) {
         type = 'inc'
@@ -340,7 +339,6 @@ function renderIncome(objArray) {
     incomeTotalContainer.innerHTML = `
         <h4>Income Total: ${formatTotal(incomeTotal, 'inc')}</h4>
     `
-    
 }
 
 // display expense info
