@@ -93,10 +93,11 @@ function postBudget(budgetData) {
 
     fetch('http://localhost:3000/budgets', configObj)
         .then(res => res.json())
-        .then(res => {console.log(res)})
+        .then(() => {
+            clearAllData() //resets budget, income and expense totals to render new data
+            getUserBudgetData(currentUserId)
+        })
 
-    clearAllData() //resets budget, income and expense totals to render new data
-    getUserBudgetData(currentUserId)
 }
 
 // get subcategories and add to dropdown options
@@ -169,10 +170,23 @@ subcategoryChart =  new Chart(expenseChart, {
     options: {
         legend: {
             position: 'right',
-        }
+        },
+        tooltips: {
+            callbacks: {
+              label:function(tooltipItem, data){
+                debugger
+
+                var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                // label += tooltipItem.yLabel;
+                return '$' + label;
+              }
+            }
+          }
     }
 });
 
+// update chart labels and data
 function updateChart(subcategoryChart, labels, data) {
     subcategoryChart.data.labels = labels;
     subcategoryChart.data.datasets[0].data = data;
@@ -389,7 +403,7 @@ function deleteItem(id) {
     }
     fetch('http://localhost:3000/budgets/' + id, configObj)
         .then(res => res.json())
-        .then(json => {
+        .then(() => {
             clearAllData()
             getUserBudgetData(currentUserId)
         })
