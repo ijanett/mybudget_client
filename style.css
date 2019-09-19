@@ -115,3 +115,7 @@
 img {
     align-content: left;
 }
+
+#copyright-container {
+    font-size: 12px;
+}
