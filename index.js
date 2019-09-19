@@ -167,6 +167,7 @@ subcategoryChart =  new Chart(expenseChart, {
         }]
     },
     options: {
+        aspectRatio: 2.5,
         legend: {
             position: 'right',
         },
@@ -300,12 +301,12 @@ function formatTotal(total, type) {
 
 // function to calculate and format budget total
 function calcBudget(total, type) {
-    if(total > 0) {
-        type = 'inc'
-        newBudgetContainer.style.color = '#212529'
-    } else {
+    if(total < 0) {
         type = 'exp'
         newBudgetContainer.style.color = 'red'
+    } else {
+        type = 'inc'
+        newBudgetContainer.style.color = '#212529'
     }
     // total > 0 ? type = 'inc' : type = 'exp'
     newBudget = formatTotal(total, type)
@@ -322,7 +323,7 @@ function renderIncome(objArray) {
         incomeListTable.innerHTML += `
             <tr>
                 <td>${incDesc.toUpperCase()}</td>
-                <td>${formatTotal(incAmt, 'inc')}</td>
+                <td align="center">${formatTotal(incAmt, 'inc')}</td>
                 <td><div class="delete-item" id="inc-${incId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `
@@ -333,9 +334,15 @@ function renderIncome(objArray) {
         calcBudget(budgetHolder, budgetType)
     })
 
-    newBudgetContainer.innerHTML = `
+    if(newBudget === 0) {
+        newBudgetContainer.innerHTML = '<h4>Remaining Budget: $0</h4>'
+        newBudgetContainer.style.color = '#212529'
+    } else {
+        newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: ${newBudget}</h4>
     `
+
+    }
     incomeTotalContainer.innerHTML = `
         <h4>Income Total: ${formatTotal(incomeTotal, 'inc')}</h4>
     `
@@ -351,7 +358,7 @@ function renderExpense(objArray) {
         expenseListTable.innerHTML += `
             <tr>
                 <td>${expDesc.toUpperCase()}</td>
-                <td>${formatTotal(expAmt, 'exp')}</td>
+                <td align="center">${formatTotal(expAmt, 'exp')}</td>
                 <td><div class="delete-item" id="inc-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `       
@@ -360,9 +367,16 @@ function renderExpense(objArray) {
         budgetHolder = incomeTotal - expenseTotal
         calcBudget(budgetHolder, budgetType)
     })
-    newBudgetContainer.innerHTML = `
+
+    if(newBudget === 0) {
+        newBudgetContainer.innerHTML = '<h4>Remaining Budget: $0</h4>'
+        newBudgetContainer.style.color = '#212529'
+    } else {
+        newBudgetContainer.innerHTML = `
         <h4>Remaining Budget: ${newBudget}</h4>
     `
+    }
+
     expenseTotalContainer.innerHTML = `
         <h4>Expense Total: ${formatTotal(expenseTotal, 'exp')}</h4>
     `
