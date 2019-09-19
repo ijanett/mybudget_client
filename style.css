@@ -2,6 +2,10 @@
     font-family: 'Muli', sans-serif;
 }
 
+*:focus {
+    outline: none;
+}
+
 #login-container {
     display: block;
 }
