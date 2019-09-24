@@ -356,10 +356,11 @@ function renderExpense(objArray) {
         expId = expObj.id
 
         expenseListTable.innerHTML += `
-            <tr>
+            <tr style="background-color: white">
                 <td>${expDesc.toUpperCase()}</td>
                 <td align="center">${formatTotal(expAmt, 'exp')}</td>
-                <td><div class="delete-item" id="inc-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
+                <td><div class="highlight-item id="exp-${expId}"><button class="highlight">highlight</button></div></td>
+                <td><div class="delete-item" id="exp-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `       
         expenseTotal += expObj.attributes.amount
@@ -401,6 +402,17 @@ expenseListTable.addEventListener("click", function(e) {
     if(e.target.className === "icon ion-md-close-circle-outline") {
         // console.log(this)
         deleteItem(expenseId)
+
+        // added feature for project assessment: highlight an item upon clicking button
+    } else if(e.target.className === "highlight") {
+        let expenseItem = e.target.closest("tr")
+        // console.log(expenseItem)
+        if (expenseItem.style.backgroundColor === "white") {
+            expenseItem.style.backgroundColor = "lemonchiffon"
+        } else {
+            expenseItem.style.backgroundColor = "white"
+        }
+        
     }
 })
 
