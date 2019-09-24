@@ -17,6 +17,7 @@ const expenseInputAmount = document.getElementById("expense-amount");
 const expenseSubmitBtn = document.querySelector("#expense-submit-button");
 const expenseSbmtError = document.querySelector("#invalid-expense")
 const expenseListTable = document.getElementById("expense-list");
+const expenseTableFooter = document.getElementById("exp-table-footer")
 const expenseTotalContainer = document.getElementById("expense-total")
 let expenseChart = document.getElementById("expense-chart").getContext("2d");
 let subLabels;
@@ -350,16 +351,25 @@ function renderIncome(objArray) {
 
 // display expense info
 function renderExpense(objArray) {
+    // footer for "delete all" button
+    // if(expenseList.length > 0) {
+    //     expenseTableFooter.innerHTML += `
+    //     <tr>
+    //         <td colspan ="4" align="center"><i class="icon ion-md-trash"></i></td>
+    //     </tr>
+    //     `
+    // }
     objArray.forEach(expObj => {
         let expDesc = expObj.attributes.description
         let expAmt = expObj.attributes.amount
         expId = expObj.id
 
         expenseListTable.innerHTML += `
-            <tr>
+            <tr style="background-color: white">
                 <td>${expDesc.toUpperCase()}</td>
                 <td align="center">${formatTotal(expAmt, 'exp')}</td>
-                <td><div class="delete-item" id="inc-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
+                <td><div class="highlight-item id="exp-${expId}"><i class="icon ion-md-star" style="color:lightgray"></i></div></td>
+                <td><div class="delete-item" id="exp-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `       
         expenseTotal += expObj.attributes.amount
@@ -401,6 +411,23 @@ expenseListTable.addEventListener("click", function(e) {
     if(e.target.className === "icon ion-md-close-circle-outline") {
         // console.log(this)
         deleteItem(expenseId)
+
+        // added feature for project assessment: highlight an item upon clicking button
+    } else if(e.target.className === "icon ion-md-star") {
+        let expenseItem = e.target.closest("tr")
+        // console.log(expenseItem)
+        if(e.target.style.color === "lightgray"){
+            e.target.style.color = "goldenrod"
+        } else {
+            e.target.style.color = "lightgray"
+        }
+        
+        // if (expenseItem.style.backgroundColor === "white") {
+        //     expenseItem.style.backgroundColor = "lemonchiffon"
+        // } else {
+        //     expenseItem.style.backgroundColor = "white"
+        // }
+        
     }
 })
 
