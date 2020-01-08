@@ -364,11 +364,12 @@ function renderExpense(objArray) {
         let expAmt = expObj.attributes.amount
         expId = expObj.id
 
+
+        // add table column for project assessment highlighting star >>> <td><div class="highlight-item id="exp-${expId}"><i class="icon ion-md-star" style="color:lightgray"></i></div></td>
         expenseListTable.innerHTML += `
             <tr style="background-color: white">
                 <td>${expDesc.toUpperCase()}</td>
                 <td align="center">${formatTotal(expAmt, 'exp')}</td>
-                <td><div class="highlight-item id="exp-${expId}"><i class="icon ion-md-star" style="color:lightgray"></i></div></td>
                 <td><div class="delete-item" id="exp-${expId}"><i class="icon ion-md-close-circle-outline"></i></div></td>
             </tr>
         `       
@@ -413,14 +414,14 @@ expenseListTable.addEventListener("click", function(e) {
         deleteItem(expenseId)
 
         // added feature for project assessment: highlight an item upon clicking button
-    } else if(e.target.className === "icon ion-md-star") {
-        let expenseItem = e.target.closest("tr")
-        // console.log(expenseItem)
-        if(e.target.style.color === "lightgray"){
-            e.target.style.color = "goldenrod"
-        } else {
-            e.target.style.color = "lightgray"
-        }
+    // } else if(e.target.className === "icon ion-md-star") {
+    //     let expenseItem = e.target.closest("tr")
+    //     // console.log(expenseItem)
+    //     if(e.target.style.color === "lightgray"){
+    //         e.target.style.color = "goldenrod"
+    //     } else {
+    //         e.target.style.color = "lightgray"
+    //     }
         
         // if (expenseItem.style.backgroundColor === "white") {
         //     expenseItem.style.backgroundColor = "lemonchiffon"
