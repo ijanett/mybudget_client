@@ -1,3 +1,4 @@
+const baseUrl = "https://mybudget-api.herokuapp.com"
 const loginContainer = document.querySelector("#login-container")
 const myBudgetContainer = document.querySelector("#myBudget-container")
 const usernameInputField = document.getElementById("username")
@@ -92,7 +93,7 @@ function postBudget(budgetData) {
         body: JSON.stringify(budgetData)
     }
 
-    fetch('http://localhost:3000/budgets', configObj)
+    fetch(baseUrl + '/budgets', configObj)
         .then(res => res.json())
         .then(() => {
             clearAllData() //resets budget, income and expense totals to render new data
@@ -102,7 +103,7 @@ function postBudget(budgetData) {
 }
 
 // get subcategories and add to dropdown options
-fetch("http://localhost:3000/subcategories")
+fetch(baseUrl + "/subcategories")
     .then(res => res.json())
     .then(json => {
         json.data.forEach(function(obj) {
@@ -140,7 +141,7 @@ function loginUser(userData) {
         body: JSON.stringify(userData)
     }
 
-    fetch('http://localhost:3000/users', configObj)
+    fetch(baseUrl + '/users', configObj)
         .then(res => res.json())
         .then(json => {
             currentUserId = json.data.id;
@@ -201,7 +202,7 @@ function updateChart(subcategoryChart, labels, data) {
 
 // render user budget info
 function getUserBudgetData(userId) {
-    fetch(`http://localhost:3000/users/` + userId)
+    fetch(baseUrl + `/users/` + userId)
         .then(res => res.json())
         .then(json => {
             budgets = json.included;
@@ -442,7 +443,7 @@ function deleteItem(id) {
         },
         body: JSON.stringify({id: id})
     }
-    fetch('http://localhost:3000/budgets/' + id, configObj)
+    fetch(baseUrl + '/budgets/' + id, configObj)
         .then(res => res.json())
         .then(() => {
             clearAllData()
