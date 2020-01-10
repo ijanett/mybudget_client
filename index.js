@@ -1,4 +1,4 @@
-const baseUrl = "https://mybudget-api.herokuapp.com"
+const baseUrl = "https://morning-waters-88941.herokuapp.com"
 const loginContainer = document.querySelector("#login-container")
 const myBudgetContainer = document.querySelector("#myBudget-container")
 const usernameInputField = document.getElementById("username")
